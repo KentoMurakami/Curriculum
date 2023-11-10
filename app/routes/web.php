@@ -17,6 +17,32 @@ use App\Http\Controllers\DisplayController;
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => 'auth'], function() {
 
-// Route::get('/stock.menu', 'HomeController@index')->name('stock.menu');
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::get('/stockmenu', 'DisplayController@stockMenu')->name('stock.menu');
+
+    Route::get('/arrivalmenu', 'DisplayController@arrivalMenu')->name('arrival.menu');
+
+    Route::get('/arrivalmenu{id}', 'RegistrationController@deleteStock')->name('delete.stock');
+
+    Route::get('/registerarrival', 'DisplayController@registerArrivalForm')->name('register.arrival.form');
+
+    Route::post('/registerarrival', 'RegistrationController@registerArrival');
+
+    Route::get('/registerarrival{id}', 'RegistrationController@decisionArrival')->name('decision.arrival');
+
+    Route::get('/registeruser', 'DisplayController@registerUserForm')->name('register.user.form');
+
+    Route::post('/registeruser', 'RegistrationController@registerUser');
+
+    Route::get('/registeritem', 'DisplayController@registerItemForm')->name('register.item.form');
+
+    Route::post('/registeritem', 'RegistrationController@registerItem');
+
+
+
+});
+
+
