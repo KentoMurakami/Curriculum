@@ -70,16 +70,16 @@
                     @foreach ($stocks as $stock)
                     <div class="col-lg-4 col-md-6">
                         <div class="card">
-                            <img src="{{ asset($stock->item->img) }}" alt="" class="card-img"/>
+                            <img src="{{ asset($stock->item->img) }}" alt="" class="card-img" style="height: 55vh;"/>
                             <div class="card-body">
                                 <p class="card-title">商品名：{{ $stock->item->name }}</p>
                                 <p class="card-text">数量：{{ number_format($stock->amount) }} </p>
                                 <p class="card-text">重量：{{ number_format($stock->weight) }} </p>
                             </div>
-                            @if( $store->id == $stock->store_id)
-                            <a href="{{ route('delete.stock', ['id'=>$stock->id]) }}">削除</a>
-                            @endif
                         </div>
+                        @if( $store->id == $stock->store_id)
+                            <a href="{{ route('delete.stock', ['id'=>$stock->id]) }}">削除</a>
+                        @endif
                     </div>
                     @endforeach
                 </div>

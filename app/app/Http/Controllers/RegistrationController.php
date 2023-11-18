@@ -94,15 +94,23 @@ class RegistrationController extends Controller
         $arrival = new Arrival;
         $arrival =  Arrival::find($id);
 
-        $stock = Stock::find($arrival->item_id);
+        $stock = new Stock;
 
         $columns = ['item_id', 'amount', 'weight', 'store_id'];
 
         
-        if ( Stock::where('item_id', $arrival->item_id)->exists() ) {
+        if ( Stock::where('item_id', $arrival->item_id)->where('store_id', $arrival->store_id)->exists() ) {
             // 入荷する商品が在庫にある場合
+            $stock = Stock::where('item_id', $arrival->item_id)->where('store_id', $arrival->store_id)->first();
 
+            $stock->amount = $stock->amount + $arrival->amount;
+            $stock->weight = $stock->weight + $arrival->weight;
 
+            $stock->save();
+
+            $arrival->delete();
+
+            return redirect('/arrivalmenu');
         } else {
             // 入荷する商品が在庫にない場合
             

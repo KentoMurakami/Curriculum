@@ -23,6 +23,11 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::get('/stockmenu', 'DisplayController@stockMenu')->name('stock.menu');
 
+
+    Route::get('/contentview', 'DisplayController@viewContent')->name('view.content');
+
+    Route::post('/contentview', 'DisplayController@getContent');
+
     Route::get('/arrivalmenu', 'DisplayController@arrivalMenu')->name('arrival.menu');
 
     Route::get('/arrivalmenu{id}', 'RegistrationController@deleteStock')->name('delete.stock');

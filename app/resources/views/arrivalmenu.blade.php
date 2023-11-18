@@ -37,14 +37,15 @@
                 @foreach ($arrivals as $arrival)
                 <div class="col-lg-4 col-md-6">
                     <div class="card">
-                        <img src="{{ asset($arrival->item->img) }}" alt="" class="card-img"/>
+                        <img src="{{ asset($arrival->item->img) }}" alt="" class="card-img" style="height: 30vh;"/>
                         <div class="card-body">
                             <p class="card-title">商品名：{{ $arrival->item->name }}</p>
                             <p class="card-text">数量：{{ number_format($arrival->amount) }} </p>
                             <p class="card-text">重量：{{ number_format($arrival->weight) }} </p>
                         </div>
-                        <a href="{{ route('decision.arrival', ['id'=>$arrival->id]) }}">確定</a>
+                        
                     </div>
+                    <a href="{{ route('decision.arrival', ['id'=>$arrival->id]) }}">確定</a>
                 </div>
                 @endforeach
             </div>

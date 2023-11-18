@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Http\Response;
+
+
 use Illuminate\Support\Facades\Auth;
 
 use App\Stock;
@@ -20,6 +23,29 @@ use App\Store;
 
 class DisplayController extends Controller
 {
+
+    public function viewContent(Request $request) {
+
+
+
+
+
+        return view('contentview');
+    }
+
+
+    public function getContent(Request $request) {
+        $stock = Stock::all();
+        // リクエストに含まれている値「count」を代入
+        // $count = $request->count;
+        // $stock = Stock::offset($count)->limit($count + 6)->get();
+       
+    //    $content = // 在庫テーブルから$countの件数をスキップし、プラスで表示したい件数を取得
+        return responce()->json($stock);
+    }
+
+
+
     public function stockMenu(Request $request) {
 
 
@@ -111,6 +137,7 @@ class DisplayController extends Controller
             /* 初期画面、検索項目がない場合は、入荷予定商品を全て表示 */
             $arrival = Arrival::with('item')->where('store_id', $store_id)->get();
         }
+
 
         return view('arrivalmenu', [
             'arrivals' => $arrival,
