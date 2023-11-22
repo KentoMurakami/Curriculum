@@ -10855,8 +10855,16 @@ function ajax_add_content() {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   }).done(function (data) {
-    // コンテンツ生成
-    console.log(data);
+    // ニュースを表示
+    for (var i = 0; i < data.length; i++) {
+      $("#content").append("<div class=\"col-lg-4 col-md-6\">\n                        <div class=\"card\">\n                            <img src=\"".concat(data[i]["item"]["img"], "\" class=\"card-img\" style=\"height: 30vh;\">\n                            <div class=\"card-body\">\n                                <p class=\"card-title\">\u5546\u54C1\u540D\uFF1A").concat(data[i]["item"]["name"], "</p>\n                                <p class=\"card-text\">\u6570\u91CF\uFF1A").concat(data[i]["amount"], "</p>\n                                <p class=\"card-text\">\u91CD\u91CF\uFF1A").concat(data[i]["weight"], "</p>\n                            </div>\n                        </div>\n                        <a href=\"/contentview").concat(data[i]["id"], "\">\u524A\u9664</a>\n                    </div>"));
+    }
+    // 取得件数を加算してセット
+    count += data.length;
+    console.log(count);
+    $("#count").val(count);
+
+    // // コンテンツ生成
     // $.each(data,function(key, val){
     //     add_content += "<div>"+val.content+"</div>";
     // })

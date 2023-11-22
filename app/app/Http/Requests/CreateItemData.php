@@ -13,7 +13,7 @@ class CreateItemData extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class CreateItemData extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|max:10',
+            'img'  => 'required',
+            'weight' => 'required|integer'
         ];
     }
 }

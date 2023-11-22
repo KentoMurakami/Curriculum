@@ -19,11 +19,13 @@
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
 
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                @if($errors->has('name'))
+                                <div class='alert alert-danger'>
+                                    @error('name')
+                                        <li>{{$message}}</li>
+                                    @enderror
+                                </div>
+                                @endif
                             </div>
                         </div>
 
@@ -33,11 +35,13 @@
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                @if($errors->has('email'))
+                                <div class='alert alert-danger'>
+                                    @error('email')
+                                        <li>{{$message}}</li>
+                                    @enderror
+                                </div>
+                                @endif
                             </div>
                         </div>
 
@@ -45,13 +49,15 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">パスワード</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="password">
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                @if($errors->has('password'))
+                                <div class='alert alert-danger'>
+                                    @error('password')
+                                        <li>{{$message}}</li>
+                                    @enderror
+                                </div>
+                                @endif
                             </div>
                         </div>
 
@@ -64,16 +70,14 @@
                         </div> -->
 
                         <div class="form-group row">
-                            <label for="store_id" class="col-md-4 col-form-label text-md-right">店舗ID</label>
-
+                            <label for="store_id" class="col-md-4 col-form-label text-md-right">店舗</label>
                             <div class="col-md-6">
-                                <input id="store_id" type="store_id" class="form-control @error('store_id') is-invalid @enderror" name="store_id" value="{{ old('store_id') }}" required autocomplete="store_id">
-
-                                @error('store_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                <select name='store_id' class='form-control'  required autocomplete="store_id">
+                                    <option value='' hidden>店舗名</option>
+                                    @foreach($stores as $store)
+                                    <option value="{{ $store['id']}}">{{ $store['name'] }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 

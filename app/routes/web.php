@@ -21,22 +21,25 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::get('/home', 'HomeController@index')->name('home');
 
-    Route::get('/stockmenu', 'DisplayController@stockMenu')->name('stock.menu');
+    // Route::get('/stockmenu', 'DisplayController@stockMenu')->name('stock.menu');
 
+    Route::get('/stockview', 'DisplayController@viewContent')->name('view.stock');
 
-    Route::get('/contentview', 'DisplayController@viewContent')->name('view.content');
-
-    Route::post('/contentview', 'DisplayController@getContent');
+    Route::post('/stockview', 'DisplayController@getContent');
 
     Route::get('/arrivalmenu', 'DisplayController@arrivalMenu')->name('arrival.menu');
 
-    Route::get('/arrivalmenu{id}', 'RegistrationController@deleteStock')->name('delete.stock');
+    Route::group(['middleware' => 'can:view,stock'], function() {
+        Route::get('/stockview{stock}', 'RegistrationController@deleteStock')->name('delete.stock');
+    });
 
     Route::get('/registerarrival', 'DisplayController@registerArrivalForm')->name('register.arrival.form');
 
     Route::post('/registerarrival', 'RegistrationController@registerArrival');
 
-    Route::get('/registerarrival{id}', 'RegistrationController@decisionArrival')->name('decision.arrival');
+    Route::group(['middleware' => 'can:view,arrival'], function() {
+        Route::get('/registerarrival{arrival}', 'RegistrationController@decisionArrival')->name('decision.arrival');
+    });
 
     Route::get('/registeruser', 'DisplayController@registerUserForm')->name('register.user.form');
 
@@ -45,9 +48,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/registeritem', 'DisplayController@registerItemForm')->name('register.item.form');
 
     Route::post('/registeritem', 'RegistrationController@registerItem');
-
-
-
 });
 
 

@@ -32,8 +32,38 @@ $(window).on("scroll", function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
             }
         }).done(function(data){
-            // コンテンツ生成
-            console.log(data);
+                // ニュースを表示
+            for (var i=0; i<data.length; i++) {
+                $("#content").append(
+                    `<div class="col-lg-4 col-md-6">
+                        <div class="card">
+                            <img src="${data[i]["item"]["img"]}" class="card-img" style="height: 30vh;">
+                            <div class="card-body">
+                                <p class="card-title">商品名：${data[i]["item"]["name"]}</p>
+                                <p class="card-text">数量：${data[i]["amount"]}</p>
+                                <p class="card-text">重量：${data[i]["weight"]}</p>
+                            </div>
+                        </div>
+                        <a href="/contentview${data[i]["id"]}">削除</a>
+                    </div>`
+                );
+            }
+            // 取得件数を加算してセット
+            count += data.length
+            console.log(count);
+            $("#count").val(count);
+
+
+
+            // // コンテンツ生成
+            // $.each(data,function(key, val){
+            //     add_content += "<div>"+val.content+"</div>";
+            // })
+            // // コンテンツ追加
+            // $("#content").append(add_content);
+            // // 取得件数を加算してセット
+            // count += data.length
+            // $("#count").val(count);
         }).fail(function(e){
             console.log(e);
         })

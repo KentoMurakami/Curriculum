@@ -33,7 +33,7 @@
                     @foreach ($stocks as $stock)
                     <div class="col-lg-4 col-md-6">
                         <div class="card">
-                            <img src="{{ asset($stock->item->img) }}" alt="" class="card-img"/>
+                            <img src="{{ asset($stock->item->img) }}" alt="" class="card-img" style="height: 30vh;"/>
                             <div class="card-body">
                                 <p class="card-title">商品名：{{ $stock->item->name }}</p>
                                 <p class="card-text">数量：{{ number_format($stock->amount) }} </p>
@@ -70,7 +70,7 @@
                     @foreach ($stocks as $stock)
                     <div class="col-lg-4 col-md-6">
                         <div class="card">
-                            <img src="{{ asset($stock->item->img) }}" alt="" class="card-img" style="height: 55vh;"/>
+                            <img src="{{ asset($stock->item->img) }}" alt="" class="card-img" style="height: 30vh;"/>
                             <div class="card-body">
                                 <p class="card-title">商品名：{{ $stock->item->name }}</p>
                                 <p class="card-text">数量：{{ number_format($stock->amount) }} </p>

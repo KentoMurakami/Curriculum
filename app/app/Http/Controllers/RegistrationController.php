@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 // use Image;
 
+use App\Http\Requests\CreateUserData;
+
+use App\Http\Requests\CreateItemData;
+
 use Illuminate\Support\Facades\Auth;
 
 use App\Item;
@@ -18,12 +22,16 @@ use App\Arrival;
 
 use App\Stock;
 
+use Illuminate\Support\Facades\Hash;
+
 class RegistrationController extends Controller
 {
 
-    public function registerUser(Request $request) {
+    public function registerUser(CreateUserData $request) {
 
         $user = new User;
+
+        $request->password = Hash::make($request->password);
         
         $columns = ['name', 'email', 'password', 'store_id'];
 
@@ -31,14 +39,12 @@ class RegistrationController extends Controller
             $user->$column = $request->$column;
         }
 
-        // ※パスワードハッシュ化
-
         $user->save();
 
         return redirect('/home');
     }
     
-    public function registerItem(Request $request) {
+    public function registerItem(CreateItemData $request) {
 
         $item = new Item;
 
@@ -87,12 +93,7 @@ class RegistrationController extends Controller
         return redirect('/arrivalmenu');
     }
 
-    public function decisionArrival($id) {
-
-        
-
-        $arrival = new Arrival;
-        $arrival =  Arrival::find($id);
+    public function decisionArrival(Arrival $arrival) {
 
         $stock = new Stock;
 
@@ -128,17 +129,13 @@ class RegistrationController extends Controller
         }
     }
 
-    public function deleteStock($id) {
-
-        
-
-        $stock = new Stock;
-        $stock =  Stock::find($id);
+    public function deleteStock(Stock $stock) {
 
         $stock->del_flg = 0;
 
         $stock->save();
 
-            return redirect('/stockmenu');
+            // return redirect('/stockmenu');
+            return redirect('/stockview');
     }
 }
