@@ -74,11 +74,11 @@ class DisplayController extends Controller
                 if ( 6 <= $stock_count) {
                     $stock = Stock::where('del_flg', 1)->whereIn('store_id', $resultArray)->whereHas('item', function ($query) use ($item) {
                         $query->where('name', 'like', '%'.$item.'%');
-                    })->take(6)->get();
+                    })->orderBy('store_id')->take(6)->get();
                 } else {
                     $stock = Stock::where('del_flg', 1)->whereIn('store_id', $resultArray)->whereHas('item', function ($query) use ($item) {
                         $query->where('name', 'like', '%'.$item.'%');
-                    })->take($stock_count % 6)->get();
+                    })->orderBy('store_id')->take($stock_count % 6)->get();
                 }
             } else if (isset($item) && !isset($store_name)) {
                 // 商品名のみ検索の場合
@@ -88,11 +88,11 @@ class DisplayController extends Controller
                 if (6 <= $stock_count) {
                     $stock = Stock::where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                         $query->where('name', 'like', '%'.$item.'%');
-                    })->take(6)->get();
+                    })->orderBy('store_id')->take(6)->get();
                 } else {
                     $stock = Stock::where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                         $query->where('name', 'like', '%'.$item.'%');
-                    })->take($stock_count % 6)->get();
+                    })->orderBy('store_id')->take($stock_count % 6)->get();
                 }
             } else if (!isset($item) && isset($store_name)) {
                 // 店舗名のみ検索の場合
@@ -111,11 +111,17 @@ class DisplayController extends Controller
                 }
             } else {
                 /* 初期画面、検索項目がない場合は、在庫商品を全て表示 */
+                // $stock_count = Stock::with(['item', 'store'])->where('del_flg', 1)->count();
+                // if (6 <= $stock_count ) {
+                //     $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->take(6)->get();
+                // } else {
+                //     $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->take($stock_count % 6)->get();
+                // }
                 $stock_count = Stock::with(['item', 'store'])->where('del_flg', 1)->count();
                 if (6 <= $stock_count ) {
-                    $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->take(6)->get();
+                    $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->take(6)->get();
                 } else {
-                    $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->take($stock_count % 6)->get();
+                    $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->take($stock_count % 6)->get();
                 }
             }
         }
@@ -250,9 +256,9 @@ class DisplayController extends Controller
                     $stock_count = Stock::with(['item', 'store'])->where('del_flg', 1)->count();
                     if ( $stock_count > $count ) {
                         if (6 <= ($stock_count - $count)) {
-                            $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->skip($count)->take(6)->get();
+                            $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->skip($count)->take(6)->get();
                         } else {
-                            $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->skip($count)->take(($stock_count - $count) % 6)->get();
+                            $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->skip($count)->take(($stock_count - $count) % 6)->get();
                         }
                         return response()->json($stock);
                     } else {

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <p class="text-center h1" style="margin:2vh 0vw 5vh 0vw;">在庫管理</p>
+    <p class="text-center h1" style="margin:2vh 0vw 4vh 0vw;">在庫管理</p>
 
     <!--  一般ユーザの管理画面 -->
     @if($role === 1)   
@@ -48,7 +48,7 @@
         </div>
     @else
     <!-- 管理ユーザの管理画面 -->
-    <div class="col-md-12" style="margin:0vh 0vw 5vh 0vw;">
+    <div class="col-md-12" style="margin:0vh 0vw 4vh 0vw;">
         <form class="form-inline" style="margin:0vh 0vw 0vh 7vw;">
             @csrf
             <label for="item_name">商品名</label>
@@ -92,7 +92,7 @@
 
         <div class="d-flex justify-content-center">
             <div class="col-md-12">
-                <p class="text-center h2" style="margin:3vh 0vw 3vh 0vw;">大阪店</p>
+                <p class="text-center h2" style="margin:0vh 0vw 3vh 0vw;">大阪店</p>
             </div>
         </div>
 
@@ -104,9 +104,10 @@
         </div>
 
 
+
         <div class="d-flex justify-content-center">
             <div class="col-md-12">
-                <p class="text-center h2" style="margin:3vh 0vw 3vh 0vw;">兵庫店</p>
+                <p class="text-center h2" style="margin:0vh 0vw 3vh 0vw;">兵庫店</p>
             </div>
         </div>
 
@@ -116,7 +117,6 @@
                 </div>
             </div>
         </div>
-
     @endif
 </div>
 
@@ -183,8 +183,8 @@
                         </div>`
                     );
                 } else {
-                    if ( 1 == data[i]["store_id"] ) {
-                        $("#content1").append(
+                    if ( store_id == data[i]["store_id"]) {
+                    $("#content").append(
                         // `<div class="col-lg-4 col-md-6" id="count">
                         `<div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
                             <div class="card">
@@ -199,23 +199,8 @@
                             <a href="/stockview${data[i]["id"]}" style="margin:0vh 0vw 0vh 11vw;">削除</a>
                         </div>`
                     );
-                    } else if (2 == data[i]["store_id"]) {
-                        $("#content2").append(
-                        // `<div class="col-lg-4 col-md-6" id="count">
-                            `<div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
-                                <div class="card">
-                                    <img src="${data[i]["item"]["img"]}" class="card-img" style="height: 30vh;">
-                                    <div class="card-body">
-                                        <p class="card-header text-center " style="width: 100%;" >${data[i]["store"]["name"]}店</p>
-                                        <p class="card-title">商品名：${data[i]["item"]["name"]}</p>
-                                        <p class="card-text">数量：${data[i]["amount"]}</p>
-                                        <p class="card-text">重量：${data[i]["weight"]}</p>
-                                    </div>
-                                </div>
-                            </div>`
-                        );
                     } else {
-                        $("#content3").append(
+                        $("#content").append(
                         // `<div class="col-lg-4 col-md-6" id="count">
                             `<div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
                                 <div class="card">
@@ -229,7 +214,7 @@
                                 </div>
                             </div>`
                         );
-                    }  
+                    }   
                 }
             }
 

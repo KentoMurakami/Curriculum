@@ -79,12 +79,16 @@ class RegistrationController extends Controller
     public function registerArrival(Request $request) {
 
         $arrival = new Arrival;
+
+        $item = Item::where('id', $request->item_id)->first();
         
-        $columns = ['item_id', 'arrivaled_at', 'amount', 'weight'];
+        $columns = ['item_id', 'arrivaled_at', 'amount'];
 
         foreach($columns as $column) {
             $arrival->$column = $request->$column;
         }
+
+        $arrival->weight = $item->weight * $arrival->amount;
 
         $arrival->store_id = Auth::user()->store_id;
 
