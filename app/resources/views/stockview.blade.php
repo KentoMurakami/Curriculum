@@ -24,14 +24,14 @@
 
         <div class="d-flex justify-content-center">
             <div class="col-md-12">
-                <p class="text-center h2" style="margin:0vh 0vw 3vh 0vw;">{{ $store->name }}店</p>
+                <p class="text-center h2" style="margin:3vh 0vw 5vh 0vw;">{{ $store->name }}店</p>
             </div>
         </div>
         <div class="shop-container">
             <div class="item-container">
                 <div class="row" id="content">
                     @foreach ($stocks as $stock)
-                    <div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
+                    <div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 5vh 0vw;">
                         <div class="card">
                             <img src="{{ asset($stock->item->img) }}" alt="" class="card-img" style="height: 30vh;"/>
                             <div class="card-body">
@@ -62,20 +62,27 @@
     </div>
         <input type="hidden" id="store_id" value="{{ $store->id }}" />
 
+
+
         <div class="d-flex justify-content-center">
             <div class="col-md-12">
-                <p class="text-center h2" style="margin:0vh 0vw 3vh 0vw;">東京店</p>
+                @if($tokyo_stock_flg === 0)
+                <p class="text-center h2" style="margin:6vh 0vw 7vh 0vw;  display: none;">東京店</p>
+                @else
+                <p class="text-center h2" style="margin:6vh 0vw 7vh 0vw;">東京店</p>
+                @endif
             </div>
         </div>
+
         <div class="shop-container">
             <div class="item-container">
                 <div class="row" id="content1">
                     @foreach ($stocks as $stock)
-                    <div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
+                    @if(1 == $stock->store_id)
+                    <div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 5vh 0vw;">
                         <div class="card">
                             <img src="{{ asset($stock->item->img) }}" alt="" class="card-img" style="height: 30vh;"/>
                             <div class="card-body">
-                                <p class="card-header text-center " style="width: 100%;" >{{ $stock->store->name }}店</p>
                                 <p class="card-title">商品名：{{ $stock->item->name }}</p>
                                 <p class="card-text">数量：{{ number_format($stock->amount) }} </p>
                                 <p class="card-text">重量：{{ number_format($stock->weight) }} </p>
@@ -85,20 +92,43 @@
                             <a href="{{ route('delete.stock', ['stock'=>$stock->id]) }}" style="margin:0vh 0vw 0vh 11vw;">削除</a>
                         @endif
                     </div>
+                    @endif
                     @endforeach
                 </div>
             </div>
         </div>
 
+        <!-- もし初期画面の段階で、表示が0だったら非表示 -->
         <div class="d-flex justify-content-center">
             <div class="col-md-12">
-                <p class="text-center h2" style="margin:3vh 0vw 3vh 0vw;">大阪店</p>
+                @if($osaka_stock_flg === 0)
+                <p class="text-center h2  store2_name" style="margin:8vh 0vw 7vh 0vw; display: none;">大阪店</p>
+                @else
+                <p class="text-center h2  store2_name" style="margin:8vh 0vw 7vh 0vw; display: block;">大阪店</p>
+                @endif
             </div>
         </div>
 
         <div class="shop-container">
             <div class="item-container">
                 <div class="row" id="content2">
+                @foreach ($stocks as $stock)
+                    @if(2 == $stock->store_id)
+                    <div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 5vh 0vw;">
+                        <div class="card">
+                            <img src="{{ asset($stock->item->img) }}" alt="" class="card-img" style="height: 30vh;"/>
+                            <div class="card-body">
+                                <p class="card-title">商品名：{{ $stock->item->name }}</p>
+                                <p class="card-text">数量：{{ number_format($stock->amount) }} </p>
+                                <p class="card-text">重量：{{ number_format($stock->weight) }} </p>
+                            </div>
+                        </div>
+                        @if( $store->id == $stock->store_id)
+                            <a href="{{ route('delete.stock', ['stock'=>$stock->id]) }}" style="margin:0vh 0vw 0vh 11vw;">削除</a>
+                        @endif
+                    </div>
+                    @endif
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -106,139 +136,43 @@
 
         <div class="d-flex justify-content-center">
             <div class="col-md-12">
-                <p class="text-center h2" style="margin:3vh 0vw 3vh 0vw;">兵庫店</p>
+                @if($hyogo_stock_flg === 0)
+                <p class="text-center h2 store3_name" style="margin:8vh 0vw 7vh 0vw; display: none;">兵庫店</p>
+                @else
+                <p class="text-center h2 store3_name" style="margin:8vh 0vw 7vh 0vw;">兵庫店</p>
+                @endif
             </div>
         </div>
 
         <div class="shop-container">
             <div class="item-container">
                 <div class="row" id="content3">
+                @foreach ($stocks as $stock)
+                    @if(3 == $stock->store_id)
+                    <div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 5vh 0vw;">
+                        <div class="card">
+                            <img src="{{ asset($stock->item->img) }}" alt="" class="card-img" style="height: 30vh;"/>
+                            <div class="card-body">
+                                <p class="card-title">商品名：{{ $stock->item->name }}</p>
+                                <p class="card-text">数量：{{ number_format($stock->amount) }} </p>
+                                <p class="card-text">重量：{{ number_format($stock->weight) }} </p>
+                            </div>
+                        </div>
+                        @if( $store->id == $stock->store_id)
+                            <a href="{{ route('delete.stock', ['stock'=>$stock->id]) }}" style="margin:0vh 0vw 0vh 11vw;">削除</a>
+                        @endif
+                    </div>
+                    @endif
+                    @endforeach
                 </div>
             </div>
         </div>
-
     @endif
 </div>
 
+<script src="{{ asset('/js/script.js') }}"></script>
 
 
-<!-- <script src="{{ asset('/js/script.js') }}"></script> -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-<script>
-    $(function(){
-    // スクロールされた時に実行
-    $(window).on("scroll", function () {
-        // pageBottom = [bodyの高さ] - [windowの高さ]
-        var pageBottom = document.body.clientHeight - window.innerHeight;
-        // スクロール量を取得
-        var currentPos = window.pageYOffset;
-
-        // スクロール量が最下部の位置を過ぎたか判定
-        if (pageBottom <= currentPos) { 
-            // console.log('res');
-            // ajaxコンテンツ追加処理
-            ajax_add_content()
-        }
-    });
-     
-    // ajaxコンテンツ追加処理
-    function ajax_add_content() {
-        // 追加コンテンツ
-        var add_content = "";
-        // コンテンツ件数           
-        var count = $(".count").length;
-
-        // 属する店舗取得
-        var store_id = $('#store_id').val();
-
-        var role = $('#role').val();
-
-        //　検索ワード取得
-        let item = $('#item').val();
-        let store_name = $('#store_name').val();
-        // ajax処理
-        $.post({
-            type: "post",
-            datatype: "json",
-            url: "/stockview",
-            data:{ count : count, item : item, store_name : store_name },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            }
-        }).done(function(data){
-                // ニュースを表示
-            for (var i=0; i<data.length; i++) {
-                if ( 1 == role ) {
-                    $("#content").append(
-                        // `<div class="col-lg-4 col-md-6" id="count">
-                        `<div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
-                            <div class="card">
-                                <img src="${data[i]["item"]["img"]}" class="card-img" style="height: 30vh;">
-                                <div class="card-body">
-                                    <p class="card-title">商品名：${data[i]["item"]["name"]}</p>
-                                    <p class="card-text">数量：${data[i]["amount"]}</p>
-                                    <p class="card-text">重量：${data[i]["weight"]}</p>
-                                </div>
-                            </div>
-                        </div>`
-                    );
-                } else {
-                    if ( 1 == data[i]["store_id"] ) {
-                        $("#content1").append(
-                        // `<div class="col-lg-4 col-md-6" id="count">
-                        `<div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
-                            <div class="card">
-                                <img src="${data[i]["item"]["img"]}" class="card-img" style="height: 30vh;">
-                                <div class="card-body">
-                                    <p class="card-header text-center " style="width: 100%;" >${data[i]["store"]["name"]}店</p>
-                                    <p class="card-title">商品名：${data[i]["item"]["name"]}</p>
-                                    <p class="card-text">数量：${data[i]["amount"]}</p>
-                                    <p class="card-text">重量：${data[i]["weight"]}</p>
-                                </div>
-                            </div>
-                            <a href="/stockview${data[i]["id"]}" style="margin:0vh 0vw 0vh 11vw;">削除</a>
-                        </div>`
-                    );
-                    } else if (2 == data[i]["store_id"]) {
-                        $("#content2").append(
-                        // `<div class="col-lg-4 col-md-6" id="count">
-                            `<div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
-                                <div class="card">
-                                    <img src="${data[i]["item"]["img"]}" class="card-img" style="height: 30vh;">
-                                    <div class="card-body">
-                                        <p class="card-header text-center " style="width: 100%;" >${data[i]["store"]["name"]}店</p>
-                                        <p class="card-title">商品名：${data[i]["item"]["name"]}</p>
-                                        <p class="card-text">数量：${data[i]["amount"]}</p>
-                                        <p class="card-text">重量：${data[i]["weight"]}</p>
-                                    </div>
-                                </div>
-                            </div>`
-                        );
-                    } else {
-                        $("#content3").append(
-                        // `<div class="col-lg-4 col-md-6" id="count">
-                            `<div class="col-lg-4 col-md-6 count" style="margin:0vh 0vw 3vh 0vw;">
-                                <div class="card">
-                                    <img src="${data[i]["item"]["img"]}" class="card-img" style="height: 30vh;">
-                                    <div class="card-body">
-                                        <p class="card-header text-center " style="width: 100%;" >${data[i]["store"]["name"]}店</p>
-                                        <p class="card-title">商品名：${data[i]["item"]["name"]}</p>
-                                        <p class="card-text">数量：${data[i]["amount"]}</p>
-                                        <p class="card-text">重量：${data[i]["weight"]}</p>
-                                    </div>
-                                </div>
-                            </div>`
-                        );
-                    }  
-                }
-            }
-
-        }).fail(function(e){
-            console.log(e);
-        })
-    }
-});
-</script>
 
 @endsection
 

@@ -10821,62 +10821,72 @@ return jQuery;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {// スクロールされた時に実行
-$(window).on("scroll", function () {
-  // スクロール位置
-  var document_h = $(document).height();
-  var window_h = $(window).height() + $(window).scrollTop();
-  var scroll_pos = (document_h - window_h) / document_h;
+/* WEBPACK VAR INJECTION */(function($) {$(function () {
+  // スクロールされた時に実行
+  $(window).on("scroll", function () {
+    // pageBottom = [bodyの高さ] - [windowの高さ]
+    var pageBottom = document.body.clientHeight - window.innerHeight;
+    // スクロール量を取得
+    var currentPos = window.pageYOffset;
 
-  // 画面最下部にスクロールされている場合
-  if (scroll_pos <= 1) {
-    // console.log('res');
-    // ajaxコンテンツ追加処理
-    ajax_add_content();
+    // スクロール量が最下部の位置を過ぎたか判定
+    if (pageBottom <= currentPos) {
+      // console.log('res');
+      // ajaxコンテンツ追加処理
+      ajax_add_content();
+    }
+  });
+
+  // ajaxコンテンツ追加処理
+  function ajax_add_content() {
+    // 追加コンテンツ
+    var add_content = "";
+    // コンテンツ件数           
+    var count = $(".count").length;
+
+    // 属する店舗取得
+    var store_id = $('#store_id').val();
+    var role = $('#role').val();
+
+    //　検索ワード取得
+    var item = $('#item').val();
+    var store_name = $('#store_name').val();
+
+    // ajax処理
+    $.post({
+      type: "post",
+      datatype: "json",
+      url: "/stockview",
+      data: {
+        count: count,
+        item: item,
+        store_name: store_name
+      },
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    }).done(function (data) {
+      // ニュースを表示
+      for (var i = 0; i < data.length; i++) {
+        if (1 == role) {
+          $("#content").append("<div class=\"col-lg-4 col-md-6 count\" style=\"margin:0vh 0vw 5vh 0vw;\">\n                            <div class=\"card\">\n                                <img src=\"".concat(data[i]["item"]["img"], "\" class=\"card-img\" style=\"height: 30vh;\">\n                                <div class=\"card-body\">\n                                    <p class=\"card-title\">\u5546\u54C1\u540D\uFF1A").concat(data[i]["item"]["name"], "</p>\n                                    <p class=\"card-text\">\u6570\u91CF\uFF1A").concat(data[i]["amount"], "</p>\n                                    <p class=\"card-text\">\u91CD\u91CF\uFF1A").concat(data[i]["weight"], "</p>\n                                </div>\n                            </div>\n                        </div>"));
+        } else {
+          if (1 == data[i]["store_id"]) {
+            $("#content1").append("<div class=\"col-lg-4 col-md-6 count\" style=\"margin:0vh 0vw 5vh 0vw;\">\n                            <div class=\"card\">\n                                <img src=\"".concat(data[i]["item"]["img"], "\" class=\"card-img\" style=\"height: 30vh;\">\n                                <div class=\"card-body\">\n                                    <p class=\"card-title\">\u5546\u54C1\u540D\uFF1A").concat(data[i]["item"]["name"], "</p>\n                                    <p class=\"card-text\">\u6570\u91CF\uFF1A").concat(data[i]["amount"], "</p>\n                                    <p class=\"card-text\">\u91CD\u91CF\uFF1A").concat(data[i]["weight"], "</p>\n                                </div>\n                            </div>\n                            <a href=\"/stockview").concat(data[i]["id"], "\" style=\"margin:0vh 0vw 0vh 11vw;\">\u524A\u9664</a>\n                        </div>"));
+          } else if (2 == data[i]["store_id"]) {
+            $(".store2_name").css("display", "block");
+            $("#content2").append("<div class=\"col-lg-4 col-md-6 count\" style=\"margin:0vh 0vw 5vh 0vw;\">\n                                <div class=\"card\">\n                                    <img src=\"".concat(data[i]["item"]["img"], "\" class=\"card-img\" style=\"height: 30vh;\">\n                                    <div class=\"card-body\">\n                                        <p class=\"card-title\">\u5546\u54C1\u540D\uFF1A").concat(data[i]["item"]["name"], "</p>\n                                        <p class=\"card-text\">\u6570\u91CF\uFF1A").concat(data[i]["amount"], "</p>\n                                        <p class=\"card-text\">\u91CD\u91CF\uFF1A").concat(data[i]["weight"], "</p>\n                                    </div>\n                                </div>\n                            </div>"));
+          } else {
+            $(".store3_name").css("display", "block");
+            $("#content3").append("<div class=\"col-lg-4 col-md-6 count\" style=\"margin:0vh 0vw 5vh 0vw;\">\n                                <div class=\"card\">\n                                    <img src=\"".concat(data[i]["item"]["img"], "\" class=\"card-img\" style=\"height: 30vh;\">\n                                    <div class=\"card-body\">\n                                        <p class=\"card-title\">\u5546\u54C1\u540D\uFF1A").concat(data[i]["item"]["name"], "</p>\n                                        <p class=\"card-text\">\u6570\u91CF\uFF1A").concat(data[i]["amount"], "</p>\n                                        <p class=\"card-text\">\u91CD\u91CF\uFF1A").concat(data[i]["weight"], "</p>\n                                    </div>\n                                </div>\n                            </div>"));
+          }
+        }
+      }
+    }).fail(function (e) {
+      console.log(e);
+    });
   }
 });
-
-// ajaxコンテンツ追加処理
-function ajax_add_content() {
-  // 追加コンテンツ
-  var add_content = "";
-  // コンテンツ件数           
-  var count = $("#count").val();
-
-  // ajax処理
-  $.post({
-    type: "post",
-    datatype: "json",
-    url: "/contentview",
-    data: {
-      count: count
-    },
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-  }).done(function (data) {
-    // ニュースを表示
-    for (var i = 0; i < data.length; i++) {
-      $("#content").append("<div class=\"col-lg-4 col-md-6\">\n                        <div class=\"card\">\n                            <img src=\"".concat(data[i]["item"]["img"], "\" class=\"card-img\" style=\"height: 30vh;\">\n                            <div class=\"card-body\">\n                                <p class=\"card-title\">\u5546\u54C1\u540D\uFF1A").concat(data[i]["item"]["name"], "</p>\n                                <p class=\"card-text\">\u6570\u91CF\uFF1A").concat(data[i]["amount"], "</p>\n                                <p class=\"card-text\">\u91CD\u91CF\uFF1A").concat(data[i]["weight"], "</p>\n                            </div>\n                        </div>\n                        <a href=\"/contentview").concat(data[i]["id"], "\">\u524A\u9664</a>\n                    </div>"));
-    }
-    // 取得件数を加算してセット
-    count += data.length;
-    console.log(count);
-    $("#count").val(count);
-
-    // // コンテンツ生成
-    // $.each(data,function(key, val){
-    //     add_content += "<div>"+val.content+"</div>";
-    // })
-    // // コンテンツ追加
-    // $("#content").append(add_content);
-    // // 取得件数を加算してセット
-    // count += data.length
-    // $("#count").val(count);
-  }).fail(function (e) {
-    console.log(e);
-  });
-}
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
 
 /***/ }),

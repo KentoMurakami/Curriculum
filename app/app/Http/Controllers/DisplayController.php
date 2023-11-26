@@ -43,11 +43,11 @@ class DisplayController extends Controller
                 })->count();
                 
                 if ( 6 <= $stock_count ) {
-                    $stock = Stock::where('store_id', $store_id)->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
+                    $stock = Stock::with('item')->where('store_id', $store_id)->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                         $query->where('name', 'like', '%'.$item.'%');
                     })->take(6)->get();
                 } else {
-                    $stock = Stock::where('store_id', $store_id)->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
+                    $stock = Stock::with('item')->where('store_id', $store_id)->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                         $query->where('name', 'like', '%'.$item.'%');
                     })->take($stock_count % 6)->get();
                 }
@@ -60,6 +60,14 @@ class DisplayController extends Controller
                     $stock = Stock::with('item')->with('store')->where('store_id', $store_id)->where('del_flg', 1)->take($stock_count % 6)->get();
                 }
             }
+
+            return view('stockview', [
+                'stocks' => $stock,
+                'store' => $store,
+                'item' => $item,
+                'store_name' => $store_name,
+                'role' => $role,       
+            ]);
         } else {
             // 管理ユーザの場合
             if ( isset($item) && isset($store_name) ) {
@@ -85,15 +93,17 @@ class DisplayController extends Controller
                 $stock_count = Stock::where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                     $query->where('name', 'like', '%'.$item.'%');
                 })->count();
+                
                 if (6 <= $stock_count) {
                     $stock = Stock::where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                         $query->where('name', 'like', '%'.$item.'%');
-                    })->orderBy('store_id')->take(6)->get();
+                    })->take(6)->orderBy('store_id')->get();
                 } else {
                     $stock = Stock::where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                         $query->where('name', 'like', '%'.$item.'%');
-                    })->orderBy('store_id')->take($stock_count % 6)->get();
+                    })->take($stock_count % 6)->get();
                 }
+                // dd($stock);
             } else if (!isset($item) && isset($store_name)) {
                 // 店舗名のみ検索の場合
                 $stock_count = Stock::with('item')->where('del_flg', 1)->whereHas('store', function ($query) use ($store_name) {
@@ -124,13 +134,33 @@ class DisplayController extends Controller
                     $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->take($stock_count % 6)->get();
                 }
             }
+            $tokyo_stock_flg = 0;
+            $osaka_stock_flg = 0;
+            $hyogo_stock_flg = 0;
+            if ( 6 <= $stock_count ) {
+                $stock_count = 6;
+            } 
+            for( $i=0; $i<$stock_count; $i++ ) {
+                if ( 1 == $stock[$i]['store_id'] ) {
+                    $tokyo_stock_flg = 1;
+                } else if (2 == $stock[$i]['store_id']) {
+                    $osaka_stock_flg = 1;
+                } else if (3 == $stock[$i]['store_id']) {
+                    $hyogo_stock_flg = 1;
+                } else {
+
+                }
+            }
         }
         return view('stockview', [
             'stocks' => $stock,
             'store' => $store,
             'item' => $item,
             'store_name' => $store_name,
-            'role' => $role
+            'role' => $role,
+            'tokyo_stock_flg' => $tokyo_stock_flg,
+            'osaka_stock_flg' => $osaka_stock_flg, 
+            'hyogo_stock_flg' => $hyogo_stock_flg,         
         ]);
     }
 
@@ -160,14 +190,14 @@ class DisplayController extends Controller
                         $query->where('name', 'like', '%'.$item.'%');
                     })->count();
                     if ( $stock_count > $count ) {
-                        if ( 6 >= ($stock_count - $count) ) {
-                            $stock = Stock::where('store_id', $store_id)->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
+                        if ( 4 >= ($stock_count - $count) ) {
+                            $stock = Stock::with('item')->where('store_id', $store_id)->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                                 $query->where('name', 'like', '%'.$item.'%');
-                            })->skip($count)->take(6)->get();
+                            })->skip($count)->take(4)->get();
                         } else {
-                            $stock = Stock::where('store_id', $store_id)->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
+                            $stock = Stock::with('item')->where('store_id', $store_id)->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                                 $query->where('name', 'like', '%'.$item.'%');
-                            })->skip($count)->take(($stock_count - $count) % 6)->get();
+                            })->skip($count)->take(($stock_count - $count) % 4)->get();
                         }
                         return response()->json($stock);
                     } else {
@@ -177,10 +207,10 @@ class DisplayController extends Controller
                     // 検索がない場合
                     $stock_count = Stock::where('store_id', $store_id)->where('del_flg', 1)->count();
                     if ( $stock_count > $count ) {
-                        if ( 6 >= ($stock_count - $count) ) {
-                            $stock = Stock::with('item')->where('store_id', $store_id)->where('del_flg', 1)->skip($count)->take(6)->get();
+                        if ( 4 >= ($stock_count - $count) ) {
+                            $stock = Stock::with('item')->where('store_id', $store_id)->where('del_flg', 1)->skip($count)->take(4)->get();
                         } else {
-                            $stock = Stock::with('item')->where('store_id', $store_id)->where('del_flg', 1)->skip($count)->take(($stock_count - $count) % 6)->get();
+                            $stock = Stock::with('item')->where('store_id', $store_id)->where('del_flg', 1)->skip($count)->take(($stock_count - $count) % 4)->get();
                         }
                         return response()->json($stock);
                     } else {
@@ -199,14 +229,14 @@ class DisplayController extends Controller
                         $query->where('name', 'like', '%'.$item.'%');
                     })->count();
                     if ( $stock_count > $count ) {
-                        if ( 6 <= ($stock_count - $count) ) {
+                        if ( 4 <= ($stock_count - $count) ) {
                             $stock = Stock::where('del_flg', 1)->whereIn('store_id', $resultArray)->whereHas('item', function ($query) use ($item) {
                                 $query->where('name', 'like', '%'.$item.'%');
-                            })->skip($count)->take(6)->get();
+                            })->orderBy('store_id')->skip($count)->take(4)->get();
                         } else {
                             $stock = Stock::where('del_flg', 1)->whereIn('store_id', $resultArray)->whereHas('item', function ($query) use ($item) {
                                 $query->where('name', 'like', '%'.$item.'%');
-                            })->skip($count)->take(($stock_count - $count) % 6)->get();
+                            })->orderBy('store_id')->skip($count)->take(($stock_count - $count) % 4)->get();
                         }
                         return response()->json($stock);
                     } else {
@@ -218,14 +248,14 @@ class DisplayController extends Controller
                         $query->where('name', 'like', '%'.$item.'%');
                     })->count();
                     if ( $stock_count > $count ) {
-                        if (6 <= ($stock_count - $count)) {
-                            $stock = Stock::where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
+                        if (4 <= ($stock_count - $count)) {
+                            $stock = Stock::with('item')->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                                 $query->where('name', 'like', '%'.$item.'%');
-                            })->skip($count)->take(6)->get();
+                            })->orderBy('store_id')->skip($count)->take(4)->get();
                         } else {
-                            $stock = Stock::where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
+                            $stock = Stock::with('item')->where('del_flg', 1)->whereHas('item', function ($query) use ($item) {
                                 $query->where('name', 'like', '%'.$item.'%');
-                            })->skip($count)->take(($stock_count - $count) % 6)->get();
+                            })->orderBy('store_id')->skip($count)->take(($stock_count - $count) % 4)->get();
                         }
                         return response()->json($stock);
                     } else {
@@ -238,14 +268,14 @@ class DisplayController extends Controller
                     })->count();
     
                     if ( $stock_count > $count ) {
-                        if (6 <= ($stock_count - $count)) {
+                        if (4 <= ($stock_count - $count)) {
                             $stock = Stock::with('item')->where('del_flg', 1)->whereHas('store', function ($query) use ($store_name) {
                                 $query->where('name', 'like', '%'.$store_name.'%');
-                            })->skip($count)->take(6)->get();
+                            })->skip($count)->take(4)->get();
                         } else {
                             $stock = Stock::with('item')->where('del_flg', 1)->whereHas('store', function ($query) use ($store_name) {
                                 $query->where('name', 'like', '%'.$store_name.'%');
-                            })->skip($count)->take(($stock_count - $count) % 6)->get();
+                            })->skip($count)->take(($stock_count - $count) % 4)->get();
                         }
                         return response()->json($stock);
                     } else {
@@ -255,10 +285,10 @@ class DisplayController extends Controller
                     /* 検索項目がない場合は、在庫商品を全て表示 */
                     $stock_count = Stock::with(['item', 'store'])->where('del_flg', 1)->count();
                     if ( $stock_count > $count ) {
-                        if (6 <= ($stock_count - $count)) {
-                            $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->skip($count)->take(6)->get();
+                        if (4 <= ($stock_count - $count)) {
+                            $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->skip($count)->take(4)->get();
                         } else {
-                            $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->skip($count)->take(($stock_count - $count) % 6)->get();
+                            $stock = Stock::with(['item', 'store'])->where('del_flg', 1)->orderBy('store_id')->skip($count)->take(($stock_count - $count) % 4)->get();
                         }
                         return response()->json($stock);
                     } else {
