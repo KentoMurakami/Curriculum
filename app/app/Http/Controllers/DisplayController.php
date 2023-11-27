@@ -65,7 +65,6 @@ class DisplayController extends Controller
                 'stocks' => $stock,
                 'store' => $store,
                 'item' => $item,
-                'store_name' => $store_name,
                 'role' => $role,       
             ]);
         } else {

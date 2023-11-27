@@ -8,13 +8,10 @@
     @if($role === 1)   
         <!-- 検索機能 -->
         <div class="col-md-12" style="margin:0vh 0vw 4vh 0vw;">
-            <form class="form-inline" style="margin:0vh 0vw 0vh 7vw;">
+            <form class="form-inline" style="margin:0vh 0vw 0vh 15vw;">
                 @csrf
                 <label for="item_name">商品名</label>
                 <input type="text" name="item" class="form-control mb-2 mr-sm-2" style="width:20vw;" id="item" placeholder="商品名" value="{{ $item }}">
-                    
-                <label for="store_name" style="margin:0vh 0vw 0vh 2vw;">店舗名</label>
-                <input type="text" name="store_name"  class="form-control mb-2 mr-sm-2" style="width:15vw;" id="store_name" placeholder="店舗名" value="{{ $store_name }}">
                 
                 <button type="submit" class="btn btn-primary mb-2" style="margin:0vh 0vw 0vh 3vw; width:6vw;">検索</button>
             </form>
@@ -169,10 +166,6 @@
         </div>
     @endif
 </div>
-
-<script src="{{ asset('/js/script.js') }}"></script>
-
-
 
 @endsection
 
